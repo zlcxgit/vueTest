@@ -1,0 +1,51 @@
+<template>
+  <form>
+    <slot></slot>
+  </form>
+</template>
+
+<script>
+  export default {
+    provide(){
+      //把表单实例作为参数传下去
+      return{
+        form:this
+      }
+    },
+    data(){
+      return{
+        pass:true
+      }
+    },
+    props:{
+      model:{
+        type:Object,
+        required:true
+      },
+      rules:{
+        type:Object
+      }
+    },
+    mounted(){
+      this.$on('errored',this.errored)
+    },
+    methods:{
+      validate(callback){
+        this.pass=true
+        this.validateAllform()
+        callback(this.pass)
+      },
+      //校验所以表单
+      validateAllform(){
+        this.$children.forEach(val=>{
+          if(val.prop){
+            val.validate()
+          }
+        })
+      },
+      errored(val){
+        this.pass=val
+      }
+    }
+  }
+</script>
